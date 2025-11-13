@@ -1,4 +1,4 @@
-## GROUP 2 STUDENT PORTAL
+## GROUP 2 STUDENT PORTAL PROJECT REPOSITORY
 
 ### Prerequisites
 Make sure you have installed the following:
