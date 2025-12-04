@@ -240,6 +240,9 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="jComboBoxSem">
       <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="fe" green="ff" red="ff" type="rgb"/>
+        </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Inter" size="12" style="0"/>
         </Property>
@@ -258,6 +261,9 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="jComboBoxDate">
       <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="fe" green="ff" red="ff" type="rgb"/>
+        </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Inter" size="12" style="0"/>
         </Property>

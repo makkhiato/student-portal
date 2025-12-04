@@ -45,25 +45,25 @@ public class Student_Admin_View extends javax.swing.JFrame {
         jButton7 = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButtonDelete = new javax.swing.JButton();
         jButtonEdit = new javax.swing.JButton();
         jButtonAdd = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(32, 76, 164));
+        jPanel1.setBackground(new Color(32, 76, 164));
 
-        jPanel4.setBackground(new java.awt.Color(20, 63, 150));
+        jPanel4.setBackground(new Color(20, 63, 150));
         jPanel4.setPreferredSize(new java.awt.Dimension(225, 670));
 
-        jButton1.setBackground(new java.awt.Color(255, 255, 254));
-        jButton1.setFont(new java.awt.Font("Inter", 1, 18)); // NOI18N
+        jButton1.setBackground(new Color(255, 255, 254));
+        jButton1.setFont(new Font("Inter", 1, 18)); // NOI18N
         jButton1.setText("  Student");
         jButton1.setBorder(null);
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -74,9 +74,9 @@ public class Student_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(20, 63, 150));
-        jButton2.setFont(new java.awt.Font("Inter", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setBackground(new Color(20, 63, 150));
+        jButton2.setFont(new Font("Inter", 0, 18)); // NOI18N
+        jButton2.setForeground(new Color(255, 255, 255));
         jButton2.setText("  Faculty");
         jButton2.setBorder(null);
         jButton2.setBorderPainted(false);
@@ -96,9 +96,9 @@ public class Student_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(20, 63, 150));
-        jButton3.setFont(new java.awt.Font("Inter", 0, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
+        jButton3.setBackground(new Color(20, 63, 150));
+        jButton3.setFont(new Font("Inter", 0, 18)); // NOI18N
+        jButton3.setForeground(new Color(255, 255, 255));
         jButton3.setText("  College");
         jButton3.setBorder(null);
         jButton3.setBorderPainted(false);
@@ -118,9 +118,9 @@ public class Student_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setBackground(new java.awt.Color(20, 63, 150));
-        jButton4.setFont(new java.awt.Font("Inter", 0, 18)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
+        jButton4.setBackground(new Color(20, 63, 150));
+        jButton4.setFont(new Font("Inter", 0, 18)); // NOI18N
+        jButton4.setForeground(new Color(255, 255, 255));
         jButton4.setText("  Course");
         jButton4.setBorder(null);
         jButton4.setBorderPainted(false);
@@ -140,16 +140,21 @@ public class Student_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setBackground(new java.awt.Color(28, 72, 161));
-        jButton5.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
+        jButton5.setBackground(new Color(28, 72, 161));
+        jButton5.setFont(new Font("Inter", 0, 14)); // NOI18N
+        jButton5.setForeground(new Color(255, 255, 255));
         jButton5.setText("Logout");
         jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton5.setFocusPainted(false);
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
-        jButton6.setBackground(new java.awt.Color(20, 63, 150));
-        jButton6.setFont(new java.awt.Font("Inter", 0, 18)); // NOI18N
-        jButton6.setForeground(new java.awt.Color(255, 255, 255));
+        jButton6.setBackground(new Color(20, 63, 150));
+        jButton6.setFont(new Font("Inter", 0, 18)); // NOI18N
+        jButton6.setForeground(new Color(255, 255, 255));
         jButton6.setText("  Subject");
         jButton6.setBorder(null);
         jButton6.setBorderPainted(false);
@@ -169,9 +174,9 @@ public class Student_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton7.setBackground(new java.awt.Color(20, 63, 150));
-        jButton7.setFont(new java.awt.Font("Inter", 0, 18)); // NOI18N
-        jButton7.setForeground(new java.awt.Color(255, 255, 255));
+        jButton7.setBackground(new Color(20, 63, 150));
+        jButton7.setFont(new Font("Inter", 0, 18)); // NOI18N
+        jButton7.setForeground(new Color(255, 255, 255));
         jButton7.setText("  Schedule");
         jButton7.setBorder(null);
         jButton7.setBorderPainted(false);
@@ -231,27 +236,24 @@ public class Student_Admin_View extends javax.swing.JFrame {
                 .addGap(37, 37, 37))
         );
 
-        jLabel16.setFont(new java.awt.Font("Inter", 1, 24)); // NOI18N
+        jLabel16.setFont(new Font("Inter", 1, 24)); // NOI18N
         jLabel16.setText("Student");
 
-        jTextField1.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jTextField1.setFont(new Font("Inter", 0, 12)); // NOI18N
         jTextField1.setText("Search");
+        jTextField1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextField1MouseClicked(evt);
+            }
+        });
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
             }
         });
 
-        jTextField2.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jTextField2.setText("Sort");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
-
-        jTable1.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable1.setFont(new Font("Inter", 0, 12)); // NOI18N
+        jTable1.setModel(new DefaultTableModel(
             new Object [][] {
 
             },
@@ -261,9 +263,9 @@ public class Student_Admin_View extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButtonDelete.setBackground(new java.awt.Color(141, 0, 0));
-        jButtonDelete.setFont(new java.awt.Font("Inter", 1, 12)); // NOI18N
-        jButtonDelete.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonDelete.setBackground(new Color(141, 0, 0));
+        jButtonDelete.setFont(new Font("Inter", 1, 12)); // NOI18N
+        jButtonDelete.setForeground(new Color(255, 255, 255));
         jButtonDelete.setText("Delete");
         jButtonDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -272,17 +274,17 @@ public class Student_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButtonEdit.setBackground(new java.awt.Color(255, 255, 254));
-        jButtonEdit.setFont(new java.awt.Font("Inter", 1, 12)); // NOI18N
-        jButtonEdit.setForeground(new java.awt.Color(48, 96, 191));
+        jButtonEdit.setBackground(new Color(255, 255, 254));
+        jButtonEdit.setFont(new Font("Inter", 1, 12)); // NOI18N
+        jButtonEdit.setForeground(new Color(48, 96, 191));
         jButtonEdit.setText("Edit");
-        jButtonEdit.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(48, 96, 191), 1, true));
+        jButtonEdit.setBorder(new javax.swing.border.LineBorder(new Color(48, 96, 191), 1, true));
         jButtonEdit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButtonEdit.setPreferredSize(new java.awt.Dimension(72, 23));
 
-        jButtonAdd.setBackground(new java.awt.Color(53, 103, 38));
-        jButtonAdd.setFont(new java.awt.Font("Inter", 1, 12)); // NOI18N
-        jButtonAdd.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonAdd.setBackground(new Color(53, 103, 38));
+        jButtonAdd.setFont(new Font("Inter", 1, 12)); // NOI18N
+        jButtonAdd.setForeground(new Color(255, 255, 255));
         jButtonAdd.setText("Add");
         jButtonAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButtonAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -290,6 +292,10 @@ public class Student_Admin_View extends javax.swing.JFrame {
                 jButtonAddActionPerformed(evt);
             }
         });
+
+        jComboBox1.setBackground(new Color(255, 255, 254));
+        jComboBox1.setFont(new Font("Inter", 0, 12)); // NOI18N
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sort", "Ascend (A to Z)", "Descend (Z to A)" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -304,16 +310,15 @@ public class Student_Admin_View extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(87, 87, 87)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel16)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(39, 39, 39)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButtonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 891, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButtonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 891, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel16))))
                 .addContainerGap(77, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -325,8 +330,8 @@ public class Student_Admin_View extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButtonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -338,12 +343,12 @@ public class Student_Admin_View extends javax.swing.JFrame {
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/plm_seal.png"))); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Inter", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setFont(new Font("Inter", 1, 18)); // NOI18N
+        jLabel2.setForeground(new Color(255, 255, 255));
         jLabel2.setText("Pamantasan ng Lungsod ng Maynila");
 
-        jLabel3.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setFont(new Font("Inter", 0, 14)); // NOI18N
+        jLabel3.setForeground(new Color(255, 255, 255));
         jLabel3.setText("University of the City of Manila");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -479,10 +484,6 @@ public class Student_Admin_View extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
-
     private void jButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddActionPerformed
         Student_AV_ADD add = new Student_AV_ADD(this, true);
         add.setVisible(true);
@@ -501,6 +502,16 @@ public class Student_Admin_View extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jButtonDeleteActionPerformed
+
+    private void jTextField1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MouseClicked
+        jTextField1.setText("");
+    }//GEN-LAST:event_jTextField1MouseClicked
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        Login_CRS logout = new Login_CRS();
+        logout.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     private void customizeTableHeader() {
         // Get the table header
@@ -541,6 +552,7 @@ public class Student_Admin_View extends javax.swing.JFrame {
     private javax.swing.JButton jButtonAdd;
     private javax.swing.JButton jButtonDelete;
     private javax.swing.JButton jButtonEdit;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
@@ -551,7 +563,6 @@ public class Student_Admin_View extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private static javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
    

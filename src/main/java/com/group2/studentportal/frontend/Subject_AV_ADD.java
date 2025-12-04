@@ -97,6 +97,7 @@ public class Subject_AV_ADD extends javax.swing.JDialog {
         jLabel18.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
         jLabel18.setText("Select Subject Lecture/Laboratory:");
 
+        jComboBoxLabLec.setBackground(new java.awt.Color(255, 255, 254));
         jComboBoxLabLec.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
         jComboBoxLabLec.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Lecture", "Laboratory" }));
 
