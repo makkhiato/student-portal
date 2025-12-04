@@ -95,9 +95,11 @@ public class Schedule_AV_ADD extends javax.swing.JDialog {
         jLabel18.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
         jLabel18.setText("Select Semester:");
 
+        jComboBoxSem.setBackground(new java.awt.Color(255, 255, 254));
         jComboBoxSem.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
         jComboBoxSem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "1", "2", "3" }));
 
+        jComboBoxDate.setBackground(new java.awt.Color(255, 255, 254));
         jComboBoxDate.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
         jComboBoxDate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Placeholder1", "Placeholder2" }));
 

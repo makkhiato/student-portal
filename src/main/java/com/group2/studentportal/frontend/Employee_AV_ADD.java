@@ -80,11 +80,13 @@ public class Employee_AV_ADD extends javax.swing.JDialog {
 
         jTextAddress.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
 
+        jComboBoxGender.setBackground(new java.awt.Color(255, 255, 254));
         jComboBoxGender.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-        jComboBoxGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Male", "Female", "Prefer not to say" }));
 
+        jComboBoxStatus.setBackground(new java.awt.Color(255, 255, 254));
         jComboBoxStatus.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Active", "Inactive" }));
 
         jTextBirthday.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
 
@@ -296,8 +298,8 @@ public class Employee_AV_ADD extends javax.swing.JDialog {
                 || jTextCPNo.getText().trim().isEmpty()
                 || jTextAddress.getText().trim().isEmpty()
                 || jTextBirthday.getText().trim().isEmpty()
-                || jComboBoxGender.getSelectedIndex() == -1
-                || jComboBoxStatus.getSelectedIndex() == -1) {
+                || jComboBoxGender.getSelectedIndex() == 0
+                || jComboBoxStatus.getSelectedIndex() == 0) {
 
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Please fill in all required fields!",

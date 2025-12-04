@@ -52,20 +52,21 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
         jButton11 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
         jComboBox2 = new javax.swing.JComboBox<>();
+        jComboBox3 = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(32, 76, 164));
+        jPanel1.setBackground(new Color(32, 76, 164));
 
-        jPanel4.setBackground(new java.awt.Color(20, 63, 150));
+        jPanel4.setBackground(new Color(20, 63, 150));
         jPanel4.setPreferredSize(new java.awt.Dimension(225, 670));
 
-        jButton1.setBackground(new java.awt.Color(20, 63, 150));
-        jButton1.setFont(new java.awt.Font("Inter", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setBackground(new Color(20, 63, 150));
+        jButton1.setFont(new Font("Inter", 0, 18)); // NOI18N
+        jButton1.setForeground(new Color(255, 255, 255));
         jButton1.setText("  Student");
         jButton1.setBorder(null);
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -84,9 +85,9 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(20, 63, 150));
-        jButton2.setFont(new java.awt.Font("Inter", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setBackground(new Color(20, 63, 150));
+        jButton2.setFont(new Font("Inter", 0, 18)); // NOI18N
+        jButton2.setForeground(new Color(255, 255, 255));
         jButton2.setText("  Faculty");
         jButton2.setBorder(null);
         jButton2.setBorderPainted(false);
@@ -106,9 +107,9 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(20, 63, 150));
-        jButton3.setFont(new java.awt.Font("Inter", 0, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
+        jButton3.setBackground(new Color(20, 63, 150));
+        jButton3.setFont(new Font("Inter", 0, 18)); // NOI18N
+        jButton3.setForeground(new Color(255, 255, 255));
         jButton3.setText("  College");
         jButton3.setBorder(null);
         jButton3.setBorderPainted(false);
@@ -128,9 +129,9 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setBackground(new java.awt.Color(20, 63, 150));
-        jButton4.setFont(new java.awt.Font("Inter", 0, 18)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
+        jButton4.setBackground(new Color(20, 63, 150));
+        jButton4.setFont(new Font("Inter", 0, 18)); // NOI18N
+        jButton4.setForeground(new Color(255, 255, 255));
         jButton4.setText("  Course");
         jButton4.setBorder(null);
         jButton4.setBorderPainted(false);
@@ -150,16 +151,21 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setBackground(new java.awt.Color(28, 72, 161));
-        jButton5.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
+        jButton5.setBackground(new Color(28, 72, 161));
+        jButton5.setFont(new Font("Inter", 0, 14)); // NOI18N
+        jButton5.setForeground(new Color(255, 255, 255));
         jButton5.setText("Logout");
         jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton5.setFocusPainted(false);
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
-        jButton6.setBackground(new java.awt.Color(20, 63, 150));
-        jButton6.setFont(new java.awt.Font("Inter", 0, 18)); // NOI18N
-        jButton6.setForeground(new java.awt.Color(255, 255, 255));
+        jButton6.setBackground(new Color(20, 63, 150));
+        jButton6.setFont(new Font("Inter", 0, 18)); // NOI18N
+        jButton6.setForeground(new Color(255, 255, 255));
         jButton6.setText("  Subject");
         jButton6.setBorder(null);
         jButton6.setBorderPainted(false);
@@ -179,8 +185,8 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton7.setBackground(new java.awt.Color(255, 255, 254));
-        jButton7.setFont(new java.awt.Font("Inter", 1, 18)); // NOI18N
+        jButton7.setBackground(new Color(255, 255, 254));
+        jButton7.setFont(new Font("Inter", 1, 18)); // NOI18N
         jButton7.setText("  Schedule");
         jButton7.setBorder(null);
         jButton7.setBorderPainted(false);
@@ -232,20 +238,25 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
                 .addGap(37, 37, 37))
         );
 
-        jLabel16.setFont(new java.awt.Font("Inter", 1, 24)); // NOI18N
+        jLabel16.setFont(new Font("Inter", 1, 24)); // NOI18N
         jLabel16.setText("Schedule");
 
-        jTextField1.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jTextField1.setFont(new Font("Inter", 0, 12)); // NOI18N
         jTextField1.setText("Search");
         jTextField1.setName(""); // NOI18N
+        jTextField1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextField1MouseClicked(evt);
+            }
+        });
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
             }
         });
 
-        jTable1.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable1.setFont(new Font("Inter", 0, 12)); // NOI18N
+        jTable1.setModel(new DefaultTableModel(
             new Object [][] {
 
             },
@@ -255,9 +266,9 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton9.setBackground(new java.awt.Color(141, 0, 0));
-        jButton9.setFont(new java.awt.Font("Inter", 1, 12)); // NOI18N
-        jButton9.setForeground(new java.awt.Color(255, 255, 255));
+        jButton9.setBackground(new Color(141, 0, 0));
+        jButton9.setFont(new Font("Inter", 1, 12)); // NOI18N
+        jButton9.setForeground(new Color(255, 255, 255));
         jButton9.setText("Delete");
         jButton9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton9.addActionListener(new java.awt.event.ActionListener() {
@@ -266,17 +277,17 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jButton10.setBackground(new java.awt.Color(255, 255, 254));
-        jButton10.setFont(new java.awt.Font("Inter", 1, 12)); // NOI18N
-        jButton10.setForeground(new java.awt.Color(48, 96, 191));
+        jButton10.setBackground(new Color(255, 255, 254));
+        jButton10.setFont(new Font("Inter", 1, 12)); // NOI18N
+        jButton10.setForeground(new Color(48, 96, 191));
         jButton10.setText("Edit");
-        jButton10.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(48, 96, 191), 1, true));
+        jButton10.setBorder(new javax.swing.border.LineBorder(new Color(48, 96, 191), 1, true));
         jButton10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton10.setPreferredSize(new java.awt.Dimension(72, 23));
 
-        jButton11.setBackground(new java.awt.Color(53, 103, 38));
-        jButton11.setFont(new java.awt.Font("Inter", 1, 12)); // NOI18N
-        jButton11.setForeground(new java.awt.Color(255, 255, 255));
+        jButton11.setBackground(new Color(53, 103, 38));
+        jButton11.setFont(new Font("Inter", 1, 12)); // NOI18N
+        jButton11.setForeground(new Color(255, 255, 255));
         jButton11.setText("Add");
         jButton11.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton11.addActionListener(new java.awt.event.ActionListener() {
@@ -285,16 +296,22 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "School Year", "Placeholder1", "Placholder2" }));
+        jComboBox1.setBackground(new Color(255, 255, 254));
+        jComboBox1.setFont(new Font("Inter", 0, 12)); // NOI18N
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "School Year", "First Year", "Second Year", "Third Year", "Fourth Year" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
             }
         });
 
-        jComboBox2.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "School Year", "Placeholder1", "Placholder2" }));
+        jComboBox2.setBackground(new Color(255, 255, 254));
+        jComboBox2.setFont(new Font("Inter", 0, 12)); // NOI18N
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semester", "1", "2", "3" }));
+
+        jComboBox3.setBackground(new Color(255, 255, 254));
+        jComboBox3.setFont(new Font("Inter", 0, 12)); // NOI18N
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sort", "Ascend (A to Z)", "Descend (Z to A)" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -317,23 +334,26 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
                                 .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 891, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(56, 56, 56)
+                .addGap(64, 64, 64)
                 .addComponent(jLabel16)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -345,12 +365,12 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/plm_seal.png"))); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Inter", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setFont(new Font("Inter", 1, 18)); // NOI18N
+        jLabel2.setForeground(new Color(255, 255, 255));
         jLabel2.setText("Pamantasan ng Lungsod ng Maynila");
 
-        jLabel3.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setFont(new Font("Inter", 0, 14)); // NOI18N
+        jLabel3.setForeground(new Color(255, 255, 255));
         jLabel3.setText("University of the City of Manila");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -509,6 +529,16 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
         add.setVisible(true);
     }//GEN-LAST:event_jButton11ActionPerformed
 
+    private void jTextField1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MouseClicked
+        jTextField1.setText("");
+    }//GEN-LAST:event_jTextField1MouseClicked
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        Login_CRS logout = new Login_CRS();
+        logout.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     private void customizeTableHeader() {
         // Get the table header
         javax.swing.table.JTableHeader header = jTable1.getTableHeader();
@@ -550,6 +580,7 @@ public class Schedule_Admin_View extends javax.swing.JFrame {
     private javax.swing.JButton jButton9;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
