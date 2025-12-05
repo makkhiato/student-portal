@@ -4,20 +4,122 @@
  */
 package com.group2.studentportal.frontend;
 
+import com.group2.studentportal.backend.dao.ScheduleDAO;
+import com.group2.studentportal.backend.models.Schedule;
+import java.awt.Color;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author mcsti
  */
 public class Schedule_AV_EDIT extends javax.swing.JDialog {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Schedule_AV_EDIT.class.getName());
+
+    private String currentScheduleId; // Track the ID being edited
 
     /**
-     * Creates new form Student_AV_Edit
+     * Creates new form Schedule_AV_EDIT
      */
     public Schedule_AV_EDIT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setupDropdowns();
+    }
+
+    private void setupDropdowns() {
+        // 1. Day Dropdown
+        jComboBoxDate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Day", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" }));
+
+        // 2. Semester Dropdown
+        jComboBoxSem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Semester", "1", "2", "3" }));
+
+        // 3. Status Dropdown
+        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Status", "Active", "Inactive" }));
+    }
+
+    /**
+     * INHERIT DATA: Fills the form with the selected schedule's details
+     */
+    public void populateData(Schedule s) {
+        this.currentScheduleId = s.getScheduleId();
+
+        // 1. Schedule ID (Locked - Primary Key)
+        jTextScheduleID.setText(s.getScheduleId());
+        jTextScheduleID.setEditable(false);
+        jTextScheduleID.setForeground(Color.GRAY);
+
+        // 2. Text Fields
+        jTextSchoolYear.setText(s.getSchoolYear());
+        jTextSubjectCode.setText(s.getSubjectCode());
+        jTextSection.setText(s.getSection());
+        jTextRoom.setText(s.getRoom());
+        jTextTime.setText(s.getTimeSlot());
+        jTextFaculty.setText(s.getEmployeeNo()); // Shows ID or Name depending on what was passed
+
+        // 3. Dropdowns
+        if (s.getDay() != null) jComboBoxDate.setSelectedItem(s.getDay());
+        if (s.getSemester() != null) jComboBoxSem.setSelectedItem(s.getSemester());
+        if (s.getStatus() != null) jComboBoxStatus.setSelectedItem(s.getStatus());
+    }
+
+    // --- BUTTON ACTIONS ---
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) { // Update Button
+        // 1. Validation
+        if (jTextSchoolYear.getText().trim().isEmpty() ||
+                jTextSubjectCode.getText().trim().isEmpty() ||
+                jTextSection.getText().trim().isEmpty() ||
+                jTextRoom.getText().trim().isEmpty() ||
+                jTextTime.getText().trim().isEmpty() ||
+                jTextFaculty.getText().trim().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this, "All fields are required.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (jComboBoxDate.getSelectedIndex() == 0 || jComboBoxSem.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Please select valid options for Day and Semester.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 2. Create Object
+        Schedule s = new Schedule();
+        s.setScheduleId(currentScheduleId); // Use original ID
+        s.setSchoolYear(jTextSchoolYear.getText());
+        s.setSemester(jComboBoxSem.getSelectedItem().toString());
+        s.setSubjectCode(jTextSubjectCode.getText());
+        s.setSection(jTextSection.getText());
+        s.setDay(jComboBoxDate.getSelectedItem().toString());
+        s.setRoom(jTextRoom.getText());
+        s.setTimeSlot(jTextTime.getText());
+        s.setEmployeeNo(jTextFaculty.getText());
+
+        // Status Handling
+        if (jComboBoxStatus.getSelectedIndex() != 0) {
+            s.setStatus(jComboBoxStatus.getSelectedItem().toString());
+        } else {
+            s.setStatus("Active");
+        }
+
+        // 3. Send to DAO
+        ScheduleDAO dao = new ScheduleDAO();
+
+        // Validate Subject Exists
+        if(!dao.subjectExists(s.getSubjectCode())) {
+            JOptionPane.showMessageDialog(this, "Error: Subject Code '" + s.getSubjectCode() + "' does not exist.", "Invalid Subject", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (dao.updateSchedule(s)) {
+            JOptionPane.showMessageDialog(this, "Schedule Updated Successfully!");
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Update Failed. Database Error.");
+        }
+    }
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) { // Cancel Button
+        this.dispose();
     }
 
     /**
@@ -26,31 +128,33 @@ public class Schedule_AV_EDIT extends javax.swing.JDialog {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jTextScheduleID = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        jTextScheduleID = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jTextSchoolYear = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
         jComboBoxSem = new javax.swing.JComboBox<>();
-        jComboBoxDate = new javax.swing.JComboBox<>();
         jLabel19 = new javax.swing.JLabel();
-        jTextSubjectCode = new javax.swing.JTextField();
+        jComboBoxDate = new javax.swing.JComboBox<>();
         jLabel20 = new javax.swing.JLabel();
-        jTextSection = new javax.swing.JTextField();
+        jTextSubjectCode = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
+        jTextSection = new javax.swing.JTextField();
         jLabel22 = new javax.swing.JLabel();
         jTextRoom = new javax.swing.JTextField();
-        jTextTime = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
+        jTextTime = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
         jTextFaculty = new javax.swing.JTextField();
+        jLabelStatus = new javax.swing.JLabel();
+        jComboBoxStatus = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -60,12 +164,63 @@ public class Schedule_AV_EDIT extends javax.swing.JDialog {
         jSeparator1.setBackground(new java.awt.Color(0, 0, 0));
         jSeparator1.setForeground(new java.awt.Color(0, 0, 0));
 
+        jLabel5.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel5.setText("Schedule ID:");
+
         jTextScheduleID.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel15.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel15.setText("School Year:");
+
+        jTextSchoolYear.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel18.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel18.setText("Semester:");
+
+        jComboBoxSem.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jComboBoxSem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel19.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel19.setText("Day:");
+
+        jComboBoxDate.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jComboBoxDate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel20.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel20.setText("Subject Code:");
+
+        jTextSubjectCode.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel21.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel21.setText("Section:");
+
+        jTextSection.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel22.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel22.setText("Room:");
+
+        jTextRoom.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel23.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel23.setText("Time Slot:");
+
+        jTextTime.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel24.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel24.setText("Faculty:");
+
+        jTextFaculty.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabelStatus.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabelStatus.setText("Status:");
+
+        jComboBoxStatus.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButton1.setBackground(new java.awt.Color(53, 103, 38));
         jButton1.setFont(new java.awt.Font("Inter", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Submit");
+        jButton1.setText("Update");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -84,167 +239,104 @@ public class Schedule_AV_EDIT extends javax.swing.JDialog {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel5.setText("Enter Schedule ID:");
-
-        jLabel15.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel15.setText("Enter School Year:");
-
-        jTextSchoolYear.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
-        jLabel18.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel18.setText("Select Semester:");
-
-        jComboBoxSem.setBackground(new java.awt.Color(255, 255, 254));
-        jComboBoxSem.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jComboBoxSem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "1", "2", "3" }));
-
-        jComboBoxDate.setBackground(new java.awt.Color(255, 255, 254));
-        jComboBoxDate.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jComboBoxDate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Placeholder1", "Placeholder2" }));
-
-        jLabel19.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel19.setText("Select Date:");
-
-        jTextSubjectCode.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
-        jLabel20.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel20.setText("Enter Subject Code:");
-
-        jTextSection.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
-        jLabel21.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel21.setText("Enter Section:");
-
-        jLabel22.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel22.setText("Enter Room:");
-
-        jTextRoom.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
-        jTextTime.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
-        jLabel23.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel23.setText("Enter Time:");
-
-        jLabel24.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel24.setText("Enter Faculty:");
-
-        jTextFaculty.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(171, 171, 171))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(173, 173, 173)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(56, 56, 56)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jComboBoxDate, javax.swing.GroupLayout.Alignment.LEADING, 0, 220, Short.MAX_VALUE)
-                            .addComponent(jLabel19, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBoxSem, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextTime, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel23)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel15)
-                                        .addComponent(jTextSchoolYear, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGap(50, 50, 50)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jTextSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel20)
-                                        .addComponent(jTextSection, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel21)
-                                        .addComponent(jLabel22)
-                                        .addComponent(jTextRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel24)
-                                        .addComponent(jTextFaculty, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jSeparator1)
+                        .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jTextScheduleID, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 54, Short.MAX_VALUE))))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(196, 196, 196)
+                                                .addComponent(jLabel1))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(68, 68, 68)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel5)
+                                                        .addComponent(jTextScheduleID, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel15)
+                                                        .addComponent(jTextSchoolYear, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel18)
+                                                        .addComponent(jComboBoxSem, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel19)
+                                                        .addComponent(jComboBoxDate, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel20)
+                                                        .addComponent(jTextSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel21)
+                                                        .addComponent(jTextSection, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel22)
+                                                        .addComponent(jTextRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel23)
+                                                        .addComponent(jTextTime, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel24)
+                                                        .addComponent(jTextFaculty, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabelStatus)
+                                                        .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(184, 184, 184)
+                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(44, 44, 44)
+                                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(74, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextScheduleID, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel15)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextSchoolYear, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel18)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxSem, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel19)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxDate, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel23)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextTime, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(34, 34, 34))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel20)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel21)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextSection, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel22)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel24)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFaculty, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextScheduleID, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel15)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextSchoolYear, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jComboBoxSem, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel19)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jComboBoxDate, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel20)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel21)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextSection, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel22)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel23)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextTime, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel24)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFaculty, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabelStatus)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(45, 45, 45)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
- 
     /**
      * @param args the command line arguments
      */
@@ -252,7 +344,7 @@ public class Schedule_AV_EDIT extends javax.swing.JDialog {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -261,14 +353,19 @@ public class Schedule_AV_EDIT extends javax.swing.JDialog {
                     break;
                 }
             }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Schedule_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Schedule_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Schedule_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Schedule_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
             public void run() {
                 Schedule_AV_EDIT dialog = new Schedule_AV_EDIT(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -282,13 +379,16 @@ public class Schedule_AV_EDIT extends javax.swing.JDialog {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBoxDate;
     private javax.swing.JComboBox<String> jComboBoxSem;
+    private javax.swing.JComboBox<String> jComboBoxStatus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel20;
@@ -297,6 +397,7 @@ public class Schedule_AV_EDIT extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabelStatus;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextFaculty;
     private javax.swing.JTextField jTextRoom;
@@ -305,5 +406,5 @@ public class Schedule_AV_EDIT extends javax.swing.JDialog {
     private javax.swing.JTextField jTextSection;
     private javax.swing.JTextField jTextSubjectCode;
     private javax.swing.JTextField jTextTime;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration
 }
