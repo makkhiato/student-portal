@@ -7,139 +7,113 @@ package com.group2.studentportal.frontend;
 import com.group2.studentportal.backend.dao.EmployeeDAO;
 import com.group2.studentportal.backend.models.Employee;
 import java.awt.Color;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.sql.Date;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 /**
  *
  * @author mcsti
  */
-public class Employee_AV_ADD extends javax.swing.JDialog {
+public class Employee_AV_EDIT extends javax.swing.JDialog {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Employee_AV_ADD.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Employee_AV_EDIT.class.getName());
+    private String currentEmpId; // Tracks which employee is being edited
 
     /**
-     * Creates new form Employee_AV_ADD
+     * Creates new form Employee_AV_EDIT
      */
-    public Employee_AV_ADD(java.awt.Frame parent, boolean modal) {
+    public Employee_AV_EDIT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        setupForm(); // Initialize Dropdowns and Placeholders
+        setupDropdowns();
     }
 
-    // --- CUSTOM LOGIC START ---
-
-    private void setupForm() {
-        // 1. Dropdowns
-        jComboBoxGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Male", "Female", "Other" }));
-        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Active", "Inactive" }));
-
-        // 2. Placeholders (Specific to Employee/Faculty)
-        addPlaceholder(jTextEmployeeNumber, "2024-100");
-        addPlaceholder(jTextLastName, "Dela Cruz");
-        addPlaceholder(jTextFirstName, "Juan");
-        addPlaceholder(jTextEmail, "JuanDelaCruz@gmail.com");
-        addPlaceholder(jTextCPNo, "+63 912 345 6789");
-        addPlaceholder(jTextAddress, "Street/Barangay/City");
-        addPlaceholder(jTextBirthday, "01-01-2000");
-        addPlaceholder(jTextPassword, "Password");
-        addPlaceholder(jTextConfirmPassword, "Confirm Password");
+    private void setupDropdowns() {
+        jComboBoxGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female", "Other" }));
+        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Active", "Inactive" }));
     }
 
-    private void addPlaceholder(JTextField field, String placeholder) {
-        field.setText(placeholder);
-        field.setForeground(Color.GRAY);
+    /**
+     * INHERIT DATA: Fills the form with the selected employee's details
+     */
+    public void populateData(Employee e) {
+        this.currentEmpId = e.getEmployeeNo();
 
-        field.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (field.getText().equals(placeholder)) {
-                    field.setText("");
-                    field.setForeground(Color.BLACK);
-                }
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (field.getText().isEmpty()) {
-                    field.setForeground(Color.GRAY);
-                    field.setText(placeholder);
-                }
-            }
-        });
+        // Fill Text Fields
+        jTextEmployeeNumber.setText(e.getEmployeeNo());
+        jTextEmployeeNumber.setEditable(false); // Lock ID (Primary Key)
+        jTextEmployeeNumber.setForeground(Color.GRAY); // Visual cue
+
+        jTextLastName.setText(e.getLastName());
+        jTextFirstName.setText(e.getFirstName());
+        jTextEmail.setText(e.getEmail());
+        jTextPassword.setText(e.getPassword());
+        jTextConfirmPassword.setText(e.getPassword()); // Assume inherited password matches
+        jTextCPNo.setText(e.getContactNo());
+        jTextAddress.setText(e.getAddress());
+
+        // Fill Date
+        if (e.getBirthday() != null) {
+            jTextBirthday.setText(e.getBirthday().toString());
+        } else {
+            jTextBirthday.setText("YYYY-MM-DD");
+        }
+
+        // Select Dropdowns
+        if (e.getGender() != null) jComboBoxGender.setSelectedItem(e.getGender());
+        if (e.getStatus() != null) jComboBoxStatus.setSelectedItem(e.getStatus());
     }
 
-    private boolean isPlaceholder(JTextField field, String placeholder) {
-        return field.getText().equals(placeholder) || field.getText().trim().isEmpty();
+    private boolean validateInput() {
+        if (jTextLastName.getText().trim().isEmpty() || jTextFirstName.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Name fields are required.");
+            return false;
+        }
+        if (!jTextPassword.getText().equals(jTextConfirmPassword.getText())) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match.");
+            return false;
+        }
+        return true;
     }
 
     // --- BUTTON ACTIONS ---
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-        // 1. Validation
-        if (isPlaceholder(jTextEmployeeNumber, "2024-100") ||
-                isPlaceholder(jTextLastName, "Dela Cruz") ||
-                isPlaceholder(jTextFirstName, "Juan")) {
+        // UPDATE / SUBMIT
+        if (!validateInput()) return;
 
-            JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (jComboBoxGender.getSelectedIndex() == 0 || jComboBoxStatus.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(this, "Please select valid options from dropdowns.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (!jTextPassword.getText().equals(jTextConfirmPassword.getText())) {
-            JOptionPane.showMessageDialog(this, "Passwords do not match.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // 2. Create Employee Object
         Employee e = new Employee();
-        e.setEmployeeNo(jTextEmployeeNumber.getText());
+        e.setEmployeeNo(currentEmpId); // Use original ID
         e.setLastName(jTextLastName.getText());
         e.setFirstName(jTextFirstName.getText());
         e.setEmail(jTextEmail.getText());
-
-        if (!isPlaceholder(jTextPassword, "Password")) {
-            e.setPassword(jTextPassword.getText());
-        } else {
-            e.setPassword("default123");
-        }
-
+        e.setPassword(jTextPassword.getText());
         e.setContactNo(jTextCPNo.getText());
         e.setAddress(jTextAddress.getText());
 
-        e.setGender(jComboBoxGender.getSelectedItem().toString());
-        e.setStatus(jComboBoxStatus.getSelectedItem().toString());
+        // Safe Dropdown Retrieval
+        if (jComboBoxGender.getSelectedItem() != null) e.setGender(jComboBoxGender.getSelectedItem().toString());
+        if (jComboBoxStatus.getSelectedItem() != null) e.setStatus(jComboBoxStatus.getSelectedItem().toString());
 
-        // 3. Handle Date
+        // Date Handling
         try {
-            if (isPlaceholder(jTextBirthday, "01-01-2000")) {
-                e.setBirthday(new Date(System.currentTimeMillis()));
-            } else {
-                // Assuming SQL format YYYY-MM-DD, or fallback to current if parsing fails
-                e.setBirthday(Date.valueOf(jTextBirthday.getText()));
-            }
+            e.setBirthday(Date.valueOf(jTextBirthday.getText()));
         } catch (Exception ex) {
-            e.setBirthday(new Date(System.currentTimeMillis()));
+            e.setBirthday(new Date(System.currentTimeMillis())); // Fallback
         }
 
-        // 4. Save to Database
+        // Send to Database
         EmployeeDAO dao = new EmployeeDAO();
-        if (dao.addEmployee(e)) {
-            JOptionPane.showMessageDialog(this, "Employee Added Successfully!");
+        if (dao.updateEmployee(e)) {
+            JOptionPane.showMessageDialog(this, "Faculty Member Updated Successfully!");
             this.dispose();
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to add employee. ID might already exist.");
+            JOptionPane.showMessageDialog(this, "Update Failed.");
         }
     }
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
-        this.dispose();
+        this.dispose(); // Cancel
     }
 
     /**
@@ -148,7 +122,7 @@ public class Employee_AV_ADD extends javax.swing.JDialog {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
@@ -181,26 +155,34 @@ public class Employee_AV_ADD extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Inter", 1, 36)); // NOI18N
-        jLabel1.setText("Add Faculty Member");
+        jLabel1.setText("Edit Faculty Member");
 
         jSeparator1.setBackground(new java.awt.Color(0, 0, 0));
         jSeparator1.setForeground(new java.awt.Color(0, 0, 0));
 
         jTextEmployeeNumber.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jTextEmployeeNumber.setText("Enter Employee  Number");
 
         jTextLastName.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jTextLastName.setText("Enter Last Name");
 
         jTextFirstName.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jTextFirstName.setText("Enter First Name");
 
         jTextPassword.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jTextPassword.setText("Enter Password");
 
         jTextConfirmPassword.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jTextConfirmPassword.setText("Confirm Password");
 
         jTextEmail.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jTextEmail.setText("Enter Email");
 
         jTextCPNo.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jTextCPNo.setText("Enter Cellphone Number");
 
         jTextAddress.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jTextAddress.setText("Enter Address");
 
         jComboBoxGender.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
         jComboBoxGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -209,11 +191,12 @@ public class Employee_AV_ADD extends javax.swing.JDialog {
         jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jTextBirthday.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jTextBirthday.setText("Enter Birthday (MM/DD/YYYY)");
 
         jButton1.setBackground(new java.awt.Color(53, 103, 38));
         jButton1.setFont(new java.awt.Font("Inter", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Submit");
+        jButton1.setText("Update");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -382,7 +365,7 @@ public class Employee_AV_ADD extends javax.swing.JDialog {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
     /**
      * @param args the command line arguments
@@ -401,20 +384,20 @@ public class Employee_AV_ADD extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Employee_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Employee_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Employee_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Employee_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Employee_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Employee_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Employee_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Employee_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Employee_AV_ADD dialog = new Employee_AV_ADD(new javax.swing.JFrame(), true);
+                Employee_AV_EDIT dialog = new Employee_AV_EDIT(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -426,7 +409,7 @@ public class Employee_AV_ADD extends javax.swing.JDialog {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBoxGender;
@@ -453,5 +436,5 @@ public class Employee_AV_ADD extends javax.swing.JDialog {
     private javax.swing.JTextField jTextFirstName;
     private javax.swing.JTextField jTextLastName;
     private javax.swing.JTextField jTextPassword;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }

@@ -7,98 +7,83 @@ package com.group2.studentportal.frontend;
 import com.group2.studentportal.backend.dao.CollegeDAO;
 import com.group2.studentportal.backend.models.College;
 import java.awt.Color;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 /**
  *
  * @author mcsti
  */
-public class College_AV_ADD extends javax.swing.JDialog {
+public class College_AV_EDIT extends javax.swing.JDialog {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(College_AV_ADD.class.getName());
+    private String currentCollegeCode;
 
     /**
-     * Creates new form College_AV_ADD
+     * Creates new form College_AV_EDIT
      */
-    public College_AV_ADD(java.awt.Frame parent, boolean modal) {
+    public College_AV_EDIT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setupForm();
     }
 
     private void setupForm() {
-        // Placeholders
-        addPlaceholder(jTextCollegeCode, "CISTM");
-        addPlaceholder(jTextCollegeDesc, "College of Information System and Technology");
-        addPlaceholder(jTextCollegeStatus, "Active");
+        // Setup Status Dropdown
+        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Active", "Inactive" }));
     }
 
-    private void addPlaceholder(JTextField field, String placeholder) {
-        field.setText(placeholder);
-        field.setForeground(Color.GRAY);
-        field.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
+    /**
+     * INHERIT DATA: Fills the form with the selected college's details
+     */
+    public void populateData(College c) {
+        this.currentCollegeCode = c.getCollegeCode();
 
-                if (field.getForeground() == Color.GRAY) {
-                    field.setText("");
-                    field.setForeground(Color.BLACK);
-                }
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (field.getText().isEmpty()) {
-                    field.setForeground(Color.GRAY);
-                    field.setText(placeholder);
-                }
-            }
-        });
+        // College Code
+        jTextCollegeCode.setText(c.getCollegeCode());
+        jTextCollegeCode.setEditable(false);
+        jTextCollegeCode.setForeground(Color.GRAY);
+
+        // Description
+        jTextDescription.setText(c.getDescription());
+
+        // Status (Dropdown)
+        if (c.getStatus() != null) {
+            jComboBoxStatus.setSelectedItem(c.getStatus());
+        }
     }
 
-    private boolean isPlaceholder(JTextField field) {
+    // BUTTON ACTIONS
 
-        return field.getForeground() == Color.GRAY || field.getText().trim().isEmpty();
-    }
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+        // SUBMIT / UPDATE
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) { // Submit
         // Validation
-        if (isPlaceholder(jTextCollegeCode) || isPlaceholder(jTextCollegeDesc)) {
-            JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        if (jTextDescription.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Description cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Status Validation
-        String status = jTextCollegeStatus.getText().trim();
-
-        if (jTextCollegeStatus.getForeground() == Color.GRAY) {
-            status = "Active";
-        }
-
-        if (!status.equalsIgnoreCase("Active") && !status.equalsIgnoreCase("Inactive")) {
-            JOptionPane.showMessageDialog(this, "Status must be 'Active' or 'Inactive'.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        if (jComboBoxStatus.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Please select a status.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         // Create Object
         College c = new College();
-        c.setCollegeCode(jTextCollegeCode.getText());
-        c.setDescription(jTextCollegeDesc.getText());
-        c.setStatus(status);
+        c.setCollegeCode(currentCollegeCode); // Use original ID
+        c.setDescription(jTextDescription.getText());
+        c.setStatus(jComboBoxStatus.getSelectedItem().toString());
 
-        // Save to DB
+        // Send to DAO
         CollegeDAO dao = new CollegeDAO();
-        if (dao.addCollege(c)) {
-            JOptionPane.showMessageDialog(this, "College Added Successfully!");
+        if (dao.updateCollege(c)) {
+            JOptionPane.showMessageDialog(this, "College Updated Successfully!");
             this.dispose();
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to add college. Code might already exist.");
+            JOptionPane.showMessageDialog(this, "Update Failed. Database Error.");
         }
     }
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) { // Cancel
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
         this.dispose();
     }
 
@@ -113,29 +98,43 @@ public class College_AV_ADD extends javax.swing.JDialog {
 
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
+        jLabel9 = new javax.swing.JLabel();
         jTextCollegeCode = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jTextDescription = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        jComboBoxStatus = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jTextCollegeDesc = new javax.swing.JTextField();
-        jLabel16 = new javax.swing.JLabel();
-        jTextCollegeStatus = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Inter", 1, 36)); // NOI18N
-        jLabel1.setText("Add College");
+        jLabel1.setText("Edit College");
 
         jSeparator1.setBackground(new java.awt.Color(0, 0, 0));
         jSeparator1.setForeground(new java.awt.Color(0, 0, 0));
 
+        jLabel9.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel9.setText("College Code:");
+
         jTextCollegeCode.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel2.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel2.setText("Description:");
+
+        jTextDescription.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel14.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel14.setText("Select Status:");
+
+        jComboBoxStatus.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButton1.setBackground(new java.awt.Color(53, 103, 38));
         jButton1.setFont(new java.awt.Font("Inter", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Submit");
+        jButton1.setText("Update");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -154,19 +153,6 @@ public class College_AV_ADD extends javax.swing.JDialog {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel5.setText("Enter College Code:");
-
-        jLabel15.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel15.setText("Enter College Description:");
-
-        jTextCollegeDesc.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
-        jLabel16.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel16.setText("Enter College Status:");
-
-        jTextCollegeStatus.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -175,48 +161,48 @@ public class College_AV_ADD extends javax.swing.JDialog {
                         .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(173, 173, 173)
-                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(44, 44, 44)
-                                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(190, 190, 190)
+                                                .addGap(196, 196, 196)
                                                 .addComponent(jLabel1))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(56, 56, 56)
+                                                .addGap(68, 68, 68)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jLabel5)
+                                                        .addComponent(jLabel9)
                                                         .addComponent(jTextCollegeCode, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel15)
-                                                        .addComponent(jTextCollegeDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel16)
-                                                        .addComponent(jTextCollegeStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addContainerGap(66, Short.MAX_VALUE))
+                                                        .addComponent(jLabel2)
+                                                        .addComponent(jTextDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel14)
+                                                        .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(184, 184, 184)
+                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(44, 44, 44)
+                                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(74, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGap(12, 12, 12)
+                                .addGap(26, 26, 26)
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
                                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel5)
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextCollegeCode, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(87, 87, 87)
-                                .addComponent(jLabel15)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextCollegeDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
-                                .addComponent(jLabel16)
+                                .addComponent(jTextDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextCollegeStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(63, 63, 63)
+                                .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(45, 45, 45)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(34, 34, 34))
+                                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         pack();
@@ -240,20 +226,20 @@ public class College_AV_ADD extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(College_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(College_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(College_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(College_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(College_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(College_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(College_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(College_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                College_AV_ADD dialog = new College_AV_ADD(new javax.swing.JFrame(), true);
+                College_AV_EDIT dialog = new College_AV_EDIT(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -268,13 +254,13 @@ public class College_AV_ADD extends javax.swing.JDialog {
     // Variables declaration - do not modify
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> jComboBoxStatus;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextCollegeCode;
-    private javax.swing.JTextField jTextCollegeDesc;
-    private javax.swing.JTextField jTextCollegeStatus;
+    private javax.swing.JTextField jTextDescription;
     // End of variables declaration
 }

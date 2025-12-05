@@ -4,15 +4,20 @@
  */
 package com.group2.studentportal.frontend;
 
-import javax.swing.table.DefaultTableModel;
+import com.group2.studentportal.backend.dao.StudentDAO;
+import com.group2.studentportal.backend.models.Student;
+import java.awt.Color;
+import java.sql.Date;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author mcsti
  */
 public class Student_AV_EDIT extends javax.swing.JDialog {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Student_AV_EDIT.class.getName());
+    private String currentStudentId; // To track which student we are editing
 
     /**
      * Creates new form Student_AV_Edit
@@ -20,7 +25,112 @@ public class Student_AV_EDIT extends javax.swing.JDialog {
     public Student_AV_EDIT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setupDropdowns();
     }
+
+    // LOGIC
+
+    private void setupDropdowns() {
+        jComboBoxGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female", "Other" }));
+        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Active", "Inactive" }));
+        jComboBoxCY.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+    }
+
+    public void populateData(Student s) {
+        this.currentStudentId = s.getStudentNo();
+
+        // INHERIT DATA
+        jTextFieldStudentNumber.setText(s.getStudentNo());
+        jTextFieldStudentNumber.setEditable(false); // ID cannot be changed
+        jTextFieldStudentNumber.setForeground(Color.GRAY); // Visual indication
+
+        jTextFieldCourseCode.setText(s.getCourseCode());
+        jTextFieldLastName.setText(s.getLastName());
+        jTextFieldFirstName.setText(s.getFirstName());
+        jTextFieldEmail.setText(s.getEmail());
+        jTextFieldCP.setText(s.getContactNo());
+        jTextFieldAddress.setText(s.getAddress());
+
+        // Password handling (Pre-fill or leave blank logic can go here)
+        jTextFieldPassword.setText(s.getPassword());
+        jTextFieldConfirmPassword.setText(s.getPassword());
+
+        if (s.getBirthday() != null) {
+            jTextFieldBirthday.setText(s.getBirthday().toString());
+        }
+
+        // Set Dropdowns
+        if(s.getGender() != null) jComboBoxGender.setSelectedItem(s.getGender());
+        if(s.getStatus() != null) jComboBoxStatus.setSelectedItem(s.getStatus());
+        if(s.getYearLevel() != null) jComboBoxCY.setSelectedItem(s.getYearLevel());
+    }
+
+    private boolean validateInput() {
+        if (jTextFieldLastName.getText().trim().isEmpty() || jTextFieldFirstName.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Name fields are required.");
+            return false;
+        }
+        if (!jTextFieldPassword.getText().equals(jTextFieldConfirmPassword.getText())) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match.");
+            return false;
+        }
+        return true;
+    }
+
+    // BUTTON ACTIONS
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+        // SUBMIT / UPDATE
+        if (!validateInput()) return;
+
+        Student s = new Student();
+        s.setStudentNo(currentStudentId);
+        s.setLastName(jTextFieldLastName.getText());
+        s.setFirstName(jTextFieldFirstName.getText());
+        s.setEmail(jTextFieldEmail.getText());
+        s.setPassword(jTextFieldPassword.getText());
+        s.setContactNo(jTextFieldCP.getText());
+        s.setAddress(jTextFieldAddress.getText());
+        s.setCourseCode(jTextFieldCourseCode.getText());
+
+        // Safe Dropdown Retrieval
+        if (jComboBoxGender.getSelectedItem() != null) s.setGender(jComboBoxGender.getSelectedItem().toString());
+        if (jComboBoxStatus.getSelectedItem() != null) s.setStatus(jComboBoxStatus.getSelectedItem().toString());
+        if (jComboBoxCY.getSelectedItem() != null) s.setYearLevel(jComboBoxCY.getSelectedItem().toString());
+
+        try {
+            s.setBirthday(Date.valueOf(jTextFieldBirthday.getText()));
+        } catch (Exception e) {
+            s.setBirthday(new Date(System.currentTimeMillis()));
+        }
+
+        StudentDAO dao = new StudentDAO();
+        if (dao.updateStudent(s)) {
+            JOptionPane.showMessageDialog(this, "Student Updated Successfully!");
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Update Failed.");
+        }
+    }
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
+        // CANCEL
+        this.dispose();
+    }
+
+    // MOUSE EVENTS
+
+    private void jTextFieldStudentNumberMouseClicked(java.awt.event.MouseEvent evt) {}
+    private void jTextFieldCourseCodeMouseClicked(java.awt.event.MouseEvent evt) {}
+    private void jTextFieldLastNameMouseClicked(java.awt.event.MouseEvent evt) {}
+    private void jTextFieldFirstNameMouseClicked(java.awt.event.MouseEvent evt) {}
+    private void jTextFieldPasswordMouseClicked(java.awt.event.MouseEvent evt) {}
+    private void jTextFieldConfirmPasswordMouseClicked(java.awt.event.MouseEvent evt) {}
+    private void jTextFieldEmailMouseClicked(java.awt.event.MouseEvent evt) {}
+    private void jTextFieldCPMouseClicked(java.awt.event.MouseEvent evt) {}
+    private void jTextFieldAddressMouseClicked(java.awt.event.MouseEvent evt) {}
+    private void jTextFieldBirthdayMouseClicked(java.awt.event.MouseEvent evt) {}
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,7 +138,7 @@ public class Student_AV_EDIT extends javax.swing.JDialog {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
@@ -152,6 +262,11 @@ public class Student_AV_EDIT extends javax.swing.JDialog {
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Submit");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(141, 0, 0));
         jButton2.setFont(new java.awt.Font("Inter", 1, 14)); // NOI18N
@@ -167,136 +282,92 @@ public class Student_AV_EDIT extends javax.swing.JDialog {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(136, 136, 136)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jTextFieldStudentNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(28, 28, 28)
-                                    .addComponent(jTextFieldCourseCode, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jTextFieldLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jTextFieldFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jTextFieldPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jTextFieldConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jComboBoxGender, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jComboBoxCY, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jTextFieldCP, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jTextFieldAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addComponent(jTextFieldBirthday, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(173, 173, 173)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(67, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jSeparator1)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(136, 136, 136)
+                                                .addComponent(jLabel1))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(55, 55, 55)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                .addGroup(layout.createSequentialGroup()
+                                                                        .addComponent(jTextFieldStudentNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addGap(28, 28, 28)
+                                                                        .addComponent(jTextFieldCourseCode, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addGroup(layout.createSequentialGroup()
+                                                                        .addComponent(jTextFieldLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addGap(18, 18, 18)
+                                                                        .addComponent(jTextFieldFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addGroup(layout.createSequentialGroup()
+                                                                        .addComponent(jTextFieldPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addGap(18, 18, 18)
+                                                                        .addComponent(jTextFieldConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                        .addGroup(layout.createSequentialGroup()
+                                                                                .addComponent(jComboBoxGender, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addGap(18, 18, 18)
+                                                                                .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addGap(18, 18, 18)
+                                                                                .addComponent(jComboBoxCY, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                                        .addGroup(layout.createSequentialGroup()
+                                                                                .addComponent(jTextFieldCP, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addGap(18, 18, 18)
+                                                                                .addComponent(jTextFieldAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                                .addComponent(jTextFieldBirthday, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(173, 173, 173)
+                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(44, 44, 44)
+                                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(67, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldStudentNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldCourseCode, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldCP, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBoxGender, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBoxCY, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jTextFieldBirthday, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(79, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jTextFieldStudentNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jTextFieldCourseCode, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jTextFieldLastName, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jTextFieldFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextFieldEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jTextFieldPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jTextFieldConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jTextFieldAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jTextFieldCP, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jComboBoxGender, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jComboBoxCY, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextFieldBirthday, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(45, 45, 45)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void jTextFieldStudentNumberMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldStudentNumberMouseClicked
-        jTextFieldStudentNumber.setText("");
-    }//GEN-LAST:event_jTextFieldStudentNumberMouseClicked
-
-    private void jTextFieldCourseCodeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldCourseCodeMouseClicked
-        jTextFieldCourseCode.setText("");
-    }//GEN-LAST:event_jTextFieldCourseCodeMouseClicked
-
-    private void jTextFieldLastNameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldLastNameMouseClicked
-        jTextFieldLastName.setText("");
-    }//GEN-LAST:event_jTextFieldLastNameMouseClicked
-
-    private void jTextFieldFirstNameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldFirstNameMouseClicked
-        jTextFieldFirstName.setText("");
-    }//GEN-LAST:event_jTextFieldFirstNameMouseClicked
-
-    private void jTextFieldPasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldPasswordMouseClicked
-        jTextFieldPassword.setText("");
-    }//GEN-LAST:event_jTextFieldPasswordMouseClicked
-
-    private void jTextFieldConfirmPasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldConfirmPasswordMouseClicked
-        jTextFieldConfirmPassword.setText("");
-    }//GEN-LAST:event_jTextFieldConfirmPasswordMouseClicked
-
-    private void jTextFieldEmailMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldEmailMouseClicked
-        jTextFieldEmail.setText("");
-    }//GEN-LAST:event_jTextFieldEmailMouseClicked
-
-    private void jTextFieldCPMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldCPMouseClicked
-        jTextFieldCP.setText("");
-    }//GEN-LAST:event_jTextFieldCPMouseClicked
-
-    private void jTextFieldAddressMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldAddressMouseClicked
-        jTextFieldAddress.setText("");
-    }//GEN-LAST:event_jTextFieldAddressMouseClicked
-
-    private void jTextFieldBirthdayMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextFieldBirthdayMouseClicked
-        jTextFieldBirthday.setText("");
-    }//GEN-LAST:event_jTextFieldBirthdayMouseClicked
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_jButton2ActionPerformed
- 
     /**
      * @param args the command line arguments
      */
@@ -304,7 +375,7 @@ public class Student_AV_EDIT extends javax.swing.JDialog {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -313,14 +384,19 @@ public class Student_AV_EDIT extends javax.swing.JDialog {
                     break;
                 }
             }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Student_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Student_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Student_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Student_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
             public void run() {
                 Student_AV_EDIT dialog = new Student_AV_EDIT(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -334,7 +410,7 @@ public class Student_AV_EDIT extends javax.swing.JDialog {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBoxCY;
@@ -352,5 +428,5 @@ public class Student_AV_EDIT extends javax.swing.JDialog {
     private javax.swing.JTextField jTextFieldLastName;
     private javax.swing.JTextField jTextFieldPassword;
     private javax.swing.JTextField jTextFieldStudentNumber;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }

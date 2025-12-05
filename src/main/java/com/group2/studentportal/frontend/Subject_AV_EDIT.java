@@ -7,113 +7,104 @@ package com.group2.studentportal.frontend;
 import com.group2.studentportal.backend.dao.SubjectDAO;
 import com.group2.studentportal.backend.models.Subject;
 import java.awt.Color;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 /**
  *
  * @author mcsti
  */
-public class Subject_AV_ADD extends javax.swing.JDialog {
+public class Subject_AV_EDIT extends javax.swing.JDialog {
 
-    public Subject_AV_ADD(java.awt.Frame parent, boolean modal) {
+    private String currentSubjectCode; // Track the ID being edited
+
+    /**
+     * Creates new form Subject_AV_EDIT
+     */
+    public Subject_AV_EDIT(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setupForm();
     }
 
     private void setupForm() {
-        // Placeholders
-        addPlaceholder(jTextSubjectCode, "CSC 0212");
-        addPlaceholder(jTextDescription, "Object-Oriented Programming");
-        addPlaceholder(jTextUnits, "3");
-        addPlaceholder(jTextCollege, "CISTM");
+        // Setup Status Dropdown
+        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Active", "Inactive" }));
     }
 
-    private void addPlaceholder(JTextField field, String placeholder) {
-        field.setText(placeholder);
-        field.setForeground(Color.GRAY);
+    /**
+     * INHERIT DATA: Fills the form with the selected subject's details
+     */
+    public void populateData(Subject s) {
+        this.currentSubjectCode = s.getSubjectCode();
 
-        field.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                // Only clear if it currently holds the placeholder (Gray text)
-                if (field.getForeground() == Color.GRAY) {
-                    field.setText("");
-                    field.setForeground(Color.BLACK);
-                }
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                // Restore placeholder if empty
-                if (field.getText().trim().isEmpty()) {
-                    field.setForeground(Color.GRAY);
-                    field.setText(placeholder);
-                }
-            }
-        });
+        // Subject Code
+        jTextSubjectCode.setText(s.getSubjectCode());
+        jTextSubjectCode.setEditable(false);
+        jTextSubjectCode.setForeground(Color.GRAY);
+
+        // Editable Fields
+        jTextDescription.setText(s.getDescription());
+        jTextUnits.setText(String.valueOf(s.getUnits()));
+        jTextCollegeCode.setText(s.getCollegeCode());
+
+        // Status (Dropdown)
+        if (s.getStatus() != null) {
+            jComboBoxStatus.setSelectedItem(s.getStatus());
+        }
     }
 
-    // FIX: Check color instead of text content
-    private boolean isPlaceholder(JTextField field) {
-        return field.getForeground() == Color.GRAY || field.getText().trim().isEmpty();
-    }
+    // BUTTON ACTIONS
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) { // Submit
-        // 1. Validation
-        if (isPlaceholder(jTextSubjectCode) ||
-                isPlaceholder(jTextDescription) ||
-                isPlaceholder(jTextUnits) ||
-                isPlaceholder(jTextCollege)) {
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+        // SUBMIT / UPDATE
 
-            JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        // Validation
+        if (jTextDescription.getText().trim().isEmpty() ||
+                jTextUnits.getText().trim().isEmpty() ||
+                jTextCollegeCode.getText().trim().isEmpty()) {
+
+            JOptionPane.showMessageDialog(this, "All fields are required.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // 2. Create Object
-        Subject s = new Subject();
-        s.setSubjectCode(jTextSubjectCode.getText());
-        s.setDescription(jTextDescription.getText());
-        s.setCollegeCode(jTextCollege.getText());
-        s.setStatus("Active"); // Default status since there is no input for it in design
+        if (jComboBoxStatus.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Please select a status.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        // 3. Validate Units
+        // Create Object
+        Subject s = new Subject();
+        s.setSubjectCode(currentSubjectCode); // Use original ID
+        s.setDescription(jTextDescription.getText());
+        s.setCollegeCode(jTextCollegeCode.getText());
+        s.setStatus(jComboBoxStatus.getSelectedItem().toString());
+
         try {
-            double units = Double.parseDouble(jTextUnits.getText());
-            s.setUnits(units);
+            s.setUnits(Double.parseDouble(jTextUnits.getText()));
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Units must be a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // 4. Dropdown Validation
-        if (jComboBoxLabLec.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(this, "Please select Lecture or Laboratory.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        // Note: You might want to save "Lecture/Lab" somewhere if your DB supports it.
-        // Currently Subject model doesn't have a specific field for it unless mapped to Description or Type.
-
-        // 5. Database Logic
+        // Send to DAO
         SubjectDAO dao = new SubjectDAO();
 
-        if (!dao.collegeExists(s.getCollegeCode())) {
+        // Validate College Exists
+        if(!dao.collegeExists(s.getCollegeCode())) {
             JOptionPane.showMessageDialog(this, "Error: College Code '" + s.getCollegeCode() + "' does not exist.", "Invalid College", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        if (dao.addSubject(s)) {
-            JOptionPane.showMessageDialog(this, "Subject Added Successfully!");
+        if (dao.updateSubject(s)) {
+            JOptionPane.showMessageDialog(this, "Subject Updated Successfully!");
             this.dispose();
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to add subject. Code might already exist.");
+            JOptionPane.showMessageDialog(this, "Update Failed. Database Error.");
         }
     }
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) { // Cancel
-        this.dispose();
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
+        this.dispose(); // Cancel
     }
 
     /**
@@ -122,38 +113,62 @@ public class Subject_AV_ADD extends javax.swing.JDialog {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jTextSubjectCode = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        jTextSubjectCode = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jTextDescription = new javax.swing.JTextField();
-        jLabel16 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
         jTextUnits = new javax.swing.JTextField();
-        jTextCollege = new javax.swing.JTextField();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
-        jComboBoxLabLec = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        jTextCollegeCode = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
+        jComboBoxStatus = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Inter", 1, 36)); // NOI18N
-        jLabel1.setText("Add Subject");
+        jLabel1.setText("Edit Subject");
 
         jSeparator1.setBackground(new java.awt.Color(0, 0, 0));
         jSeparator1.setForeground(new java.awt.Color(0, 0, 0));
 
+        jLabel5.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel5.setText("Subject Code:");
+
         jTextSubjectCode.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel15.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel15.setText("Subject Description:");
+
+        jTextDescription.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel6.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel6.setText("Units:");
+
+        jTextUnits.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel7.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel7.setText("College Code:");
+
+        jTextCollegeCode.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+
+        jLabel16.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
+        jLabel16.setText("Select Status:");
+
+        jComboBoxStatus.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
+        jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButton1.setBackground(new java.awt.Color(53, 103, 38));
         jButton1.setFont(new java.awt.Font("Inter", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Submit");
+        jButton1.setText("Update");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -172,30 +187,6 @@ public class Subject_AV_ADD extends javax.swing.JDialog {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel5.setText("Enter Subject Code:");
-
-        jLabel15.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel15.setText("Enter Subject Description:");
-
-        jTextDescription.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
-        jLabel16.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel16.setText("Enter Subject Units:");
-
-        jTextUnits.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
-        jTextCollege.setFont(new java.awt.Font("Inter", 0, 14)); // NOI18N
-
-        jLabel17.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel17.setText("Enter College:");
-
-        jLabel18.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jLabel18.setText("Select Subject Lecture/Laboratory:");
-
-        jComboBoxLabLec.setFont(new java.awt.Font("Inter", 0, 12)); // NOI18N
-        jComboBoxLabLec.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Lecture", "Laboratory" }));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -204,36 +195,36 @@ public class Subject_AV_ADD extends javax.swing.JDialog {
                         .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(173, 173, 173)
-                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(44, 44, 44)
-                                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(196, 196, 196)
+                                                .addComponent(jLabel1))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(56, 56, 56)
+                                                .addGap(68, 68, 68)
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(jLabel5)
                                                         .addComponent(jTextSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(jLabel15)
                                                         .addComponent(jTextDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel16)
+                                                        .addComponent(jLabel6)
                                                         .addComponent(jTextUnits, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jTextCollege, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel17)
-                                                        .addComponent(jLabel18)
-                                                        .addComponent(jComboBoxLabLec, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                        .addComponent(jLabel7)
+                                                        .addComponent(jTextCollegeCode, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jLabel16)
+                                                        .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addGroup(layout.createSequentialGroup()
-                                                .addGap(188, 188, 188)
-                                                .addComponent(jLabel1)))
-                                .addContainerGap(66, Short.MAX_VALUE))
+                                                .addGap(184, 184, 184)
+                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(44, 44, 44)
+                                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(74, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGap(12, 12, 12)
+                                .addGap(26, 26, 26)
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
                                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addGap(27, 27, 27)
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextSubjectCode, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -242,27 +233,27 @@ public class Subject_AV_ADD extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jLabel16)
+                                .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextUnits, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jLabel18)
+                                .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBoxLabLec, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                                .addComponent(jLabel17)
+                                .addComponent(jTextCollegeCode, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel16)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextCollege, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(75, 75, 75)
+                                .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(45, 45, 45)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(34, 34, 34))
+                                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>
+    }// </editor-fold>                        
 
     /**
      * @param args the command line arguments
@@ -281,20 +272,20 @@ public class Subject_AV_ADD extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Subject_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Subject_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Subject_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Subject_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Subject_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Subject_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Subject_AV_ADD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Subject_AV_EDIT.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Subject_AV_ADD dialog = new Subject_AV_ADD(new javax.swing.JFrame(), true);
+                Subject_AV_EDIT dialog = new Subject_AV_EDIT(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -306,20 +297,20 @@ public class Subject_AV_ADD extends javax.swing.JDialog {
         });
     }
 
-    // Variables declaration - do not modify
+    // Variables declaration - do not modify                     
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBoxLabLec;
+    private javax.swing.JComboBox<String> jComboBoxStatus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextCollege;
+    private javax.swing.JTextField jTextCollegeCode;
     private javax.swing.JTextField jTextDescription;
     private javax.swing.JTextField jTextSubjectCode;
     private javax.swing.JTextField jTextUnits;
-    // End of variables declaration
+    // End of variables declaration                   
 }
